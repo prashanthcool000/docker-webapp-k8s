@@ -8,6 +8,7 @@
 FROM maven:3.9-eclipse-temurin-11 AS build
 WORKDIR /src
 
+
 # Copy the POM first so dependency downloads are cached between builds
 COPY pom.xml .
 RUN --mount=type=cache,target=/root/.m2 mvn -B -q dependency:resolve || true
