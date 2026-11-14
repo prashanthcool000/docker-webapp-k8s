@@ -6,33 +6,38 @@
 
 ########## Stage 1: build the WAR ##########
 FROM maven:3.9-eclipse-temurin-11 AS build
-WORKDIR /src
 
-# Copy the POM first so dependency downloads are cached between builds
+# container folder
+WORKDIR /app
+
+# Copy the POM first
 COPY pom.xml .
-RUN --mount=type=cache,target=/root/.m2 mvn -B -q dependency:resolve || true
 
+#download dependencies
+RUN mvn dependency:go-offline
+
+#copy source code
 COPY src ./src
-# Tests run in CI; skip them here to keep image builds fast and deterministic
-RUN --mount=type=cache,target=/root/.m2 mvn -B package -DskipTests \
- && cp target/*.war /src/app.war
+
+#Build application
+RUN mvn clean package -DskipTests
 
 ########## Stage 2: runtime ##########
 # Tomcat 9 = Servlet 4 / javax.* namespace (Tomcat 10+ would break this app)
 FROM tomcat:9.0-jre11-temurin-jammy
 
-# Remove default apps, create an unprivileged user
+# Remove Tomcat default applications
 RUN rm -rf /usr/local/tomcat/webapps/* \
- && groupadd --system --gid 10001 app \
- && useradd  --system --uid 10001 --gid app --home-dir /usr/local/tomcat --shell /usr/sbin/nologin app \
- && mkdir -p /usr/local/tomcat/tmpFiles \
- && chown -R app:app /usr/local/tomcat
+    && groupadd --system --gid 10001 app \           # Create app group
+    && useradd --system --uid 10001 --gid app app    # Create app user
+    && mkdir -p /usr/local/tomcat/tmpFiles           # Create temporary folder
+    && chown -R app:app /usr/local/tomcat            # Give app user ownership of Tomcat folder
 
-COPY --from=build --chown=app:app /src/app.war /usr/local/tomcat/webapps/ROOT.war
+COPY --from=build --chown=app:app /src/app.war /usr/local/tomcat/webapps/ROOT.war  #copy .war file from build stage to tomcat default folder
 
 # Container-aware JVM sizing (heap = 75% of the pod memory limit)
 ENV JAVA_OPTS="-XX:MaxRAMPercentage=75.0 -XX:+ExitOnOutOfMemoryError -Djava.security.egd=file:/dev/./urandom"
 
 USER 10001
-EXPOSE 8080
+EXPOSE 1234
 CMD ["catalina.sh", "run"]
