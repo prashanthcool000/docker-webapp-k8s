@@ -12,6 +12,7 @@ WORKDIR /app
 
 # Copy the POM first
 COPY pom.xml .
+RUN --mount=type=cache,target=/root/.m2 mvn -B -q dependency:resolve || true
 
 #download dependencies
 RUN mvn dependency:go-offline
