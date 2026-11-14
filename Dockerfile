@@ -31,7 +31,7 @@ RUN rm -rf /usr/local/tomcat/webapps/* \
     && groupadd --system --gid 10001 app \            
     && useradd --system --uid 10001 --gid app app \    
     && mkdir -p /usr/local/tomcat/tmpFiles \           
-    && chown -R app:app /usr/local/tomcat \           
+    && chown -R app:app /usr/local/tomcat        
 
 COPY --from=build --chown=app:app /src/app.war /usr/local/tomcat/webapps/ROOT.war  #copy .war file from build stage to tomcat default folder
 
