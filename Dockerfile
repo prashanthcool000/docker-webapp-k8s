@@ -26,12 +26,12 @@ RUN mvn clean package -DskipTests
 # Tomcat 9 = Servlet 4 / javax.* namespace (Tomcat 10+ would break this app)
 FROM tomcat:9.0-jre11-temurin-jammy
 
-# Remove Tomcat default applications
+# 1.Remove Tomcat default applications 2.Create app group 3.Create app user 4.Create temporary folder 5. Give app user ownership of Tomcat folder
 RUN rm -rf /usr/local/tomcat/webapps/* \
-    && groupadd --system --gid 10001 app \           # Create app group
-    && useradd --system --uid 10001 --gid app app    # Create app user
-    && mkdir -p /usr/local/tomcat/tmpFiles           # Create temporary folder
-    && chown -R app:app /usr/local/tomcat            # Give app user ownership of Tomcat folder
+    && groupadd --system --gid 10001 app \            
+    && useradd --system --uid 10001 --gid app app \    
+    && mkdir -p /usr/local/tomcat/tmpFiles \           
+    && chown -R app:app /usr/local/tomcat \           
 
 COPY --from=build --chown=app:app /src/app.war /usr/local/tomcat/webapps/ROOT.war  #copy .war file from build stage to tomcat default folder
 
