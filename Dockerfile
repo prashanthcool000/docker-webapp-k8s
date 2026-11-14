@@ -17,8 +17,8 @@ FROM tomcat:9.0-jre11-temurin-jammy AS runtime
 
 # Remove default Tomcat applications
 RUN rm -rf /usr/local/tomcat/webapps/* \
-    && groupadd --system --gid 10001 app \
-     && useradd  --system --uid 10001 --gid app \
+    && groupadd --system --gid 10001 app || true \
+     && useradd  --system --uid 10001 --gid app -m -s / bin/bash app || true \
      && mkdir -p /usr/local/tomcat/tmpFiles \
      && chown -R app:app /usr/local/tomcat
 
