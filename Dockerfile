@@ -14,7 +14,7 @@ WORKDIR /app
 COPY pom.xml .
 
 #download dependencies
-RUN mvn dependency
+RUN mvn dependency:go-offline
 
 #copy source code
 COPY src ./src
@@ -33,7 +33,8 @@ RUN rm -rf /usr/local/tomcat/webapps/* \
     && mkdir -p /usr/local/tomcat/tmpFiles \           
     && chown -R app:app /usr/local/tomcat        
 
-COPY --from=build --chown=app:app /src/app.war /usr/local/tomcat/webapps/ROOT.war  #copy .war file from build stage to tomcat default folder
+#copy .war file from build stage to tomcat default folder
+COPY --from=build --chown=app:app /src/app.war /usr/local/tomcat/webapps/ROOT.war 
 
 # Container-aware JVM sizing (heap = 75% of the pod memory limit)
 ENV JAVA_OPTS="-XX:MaxRAMPercentage=75.0 -XX:+ExitOnOutOfMemoryError -Djava.security.egd=file:/dev/./urandom"
