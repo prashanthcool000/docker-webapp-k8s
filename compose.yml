@@ -24,5 +24,5 @@ services:
       JDBC_USERNAME: vprofile
       JDBC_PASSWORD: localapppass
     depends_on:
-      devopsdb:
-        condition: service_healthy
+      - devopsdb:
+        
