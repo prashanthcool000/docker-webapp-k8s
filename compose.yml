@@ -48,7 +48,8 @@ services:
           cpus: "1.0"
           memory: 200M
     depends_on:
-      - devopsdb
+      devopsdb:
+        condition: service_healthy
 
 networks:
   network1:
