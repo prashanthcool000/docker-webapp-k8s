@@ -1,6 +1,7 @@
+
 # Local smoke test before pushing images:
 # docker compose up --build
-# Open http://localhost:8080 and register a new user to test.
+# Open http://localhost:1234 and register a new user to test.
 
 services:
   devopsdb:
@@ -20,14 +21,13 @@ services:
       interval: 10s
       retries: 12
     deploy:
-			resources:
-				reservations:
-					cpus: "0.5"
-					memory: 100M
-				limits:
-					cpus: "1.0"
-					memory: 200M
-    
+      resources:
+        reservations:
+          cpus: "0.5"
+          memory: 100M
+        limits:
+          cpus: "1.0"
+          memory: 200M
 
   app:
     image: karkamprashanth/project1:app
@@ -40,18 +40,19 @@ services:
       JDBC_USERNAME: vprofile
       JDBC_PASSWORD: localapppass
     deploy:
-			resources:
-				reservations:
-					cpus: "0.5"
-					memory: 100M
-				limits:
-					cpus: "1.0"
-					memory: 200M
+      resources:
+        reservations:
+          cpus: "0.5"
+          memory: 100M
+        limits:
+          cpus: "1.0"
+          memory: 200M
     depends_on:
       - devopsdb
 
 networks:
   network1:
     driver: bridge
+
 volumes:
   volume1:
