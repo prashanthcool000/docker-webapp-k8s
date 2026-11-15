@@ -6,8 +6,6 @@
 services:
   devopsdb:
     build: ./Docker-db
-    ports:
-      - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: localrootpass
       MYSQL_USER: vprofile
