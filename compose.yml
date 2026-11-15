@@ -1,11 +1,10 @@
-
 # Local smoke test before pushing images:
 # docker compose up --build
-# Open http://localhost:1234 and register a new user to test.
+# Then open http://localhost:1234 and register a new user to test
 
 services:
   devopsdb:
-    image: karkamprashanth/project1:db
+    image: shaikmustafa/king:db
     environment:
       MYSQL_ROOT_PASSWORD: localrootpass
       MYSQL_USER: vprofile
@@ -16,7 +15,7 @@ services:
       retries: 12
 
   app:
-    image: karkamprashanth/project1:app
+    image: shaikmustafa/king:app
     ports:
       - "1234:8080"
     environment:
@@ -26,4 +25,3 @@ services:
     depends_on:
       devopsdb:
         condition: service_healthy
-
