@@ -9,7 +9,7 @@ services:
     networks:
       - network1
     volumes:
-      - volume1: /var/lib/mysql
+      - volume1:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: localrootpass
       MYSQL_USER: vprofile
