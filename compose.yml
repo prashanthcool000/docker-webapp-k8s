@@ -6,6 +6,8 @@
 services:
   devopsdb:
     image: karkamprashanth/project1:db
+    ports:
+      - "3306:3306"
     networks:
       - network1
     volumes:
