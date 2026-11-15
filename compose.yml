@@ -6,6 +6,10 @@
 services:
   devopsdb:
     image: karkamprashanth/project1:db
+    networks:
+      - network1
+    volumes:
+      - volume1: /var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: localrootpass
       MYSQL_USER: vprofile
@@ -14,15 +18,23 @@ services:
       test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$$MYSQL_ROOT_PASSWORD --silent"]
       interval: 10s
       retries: 12
+    
 
   app:
     image: karkamprashanth/project1:app
     ports:
       - "1234:8080"
+    networks:
+      - network1
     environment:
       JDBC_URL: "jdbc:mysql://devopsdb:3306/accounts?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&useSSL=false"
       JDBC_USERNAME: vprofile
       JDBC_PASSWORD: localapppass
     depends_on:
       - devopsdb
-        
+
+networks:
+  network1:
+    driver: bridge
+volumes:
+  volume1:
