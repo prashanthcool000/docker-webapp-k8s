@@ -19,6 +19,14 @@ services:
       test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$$MYSQL_ROOT_PASSWORD --silent"]
       interval: 10s
       retries: 12
+    deploy:
+      resources:
+        reservations:
+          cpus: "1.0"
+          memory: 200M
+        limits:
+          cpus: "2.0"
+          memory: 400M
 
   app:
     image: karkamprashanth/project1:app
@@ -30,6 +38,14 @@ services:
       JDBC_URL: "jdbc:mysql://devopsdb:3306/accounts?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&useSSL=false"
       JDBC_USERNAME: vprofile
       JDBC_PASSWORD: localapppass
+    deploy:
+      resources:
+        reservations:
+          cpus: "1.0"
+          memory: 200M
+        limits:
+          cpus: "2.0"
+          memory: 400M
     depends_on:
       devopsdb:
         condition: service_healthy
