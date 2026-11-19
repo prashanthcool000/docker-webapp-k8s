@@ -28,13 +28,14 @@ FROM tomcat:9.0-jre11-temurin-jammy AS runtime
 RUN rm -rf /usr/local/tomcat/webapps/*
 
 # Create user
-RUN useradd -m -d /home/user user
+RUN rm -rf /usr/local/tomcat/webapps/* \
+ && groupadd --system --gid 10001 user \
+ && useradd  --system --uid 10001 --gid user --home-dir /usr/local/tomcat --shell /usr/sbin/nologin app \
+ && mkdir -p /usr/local/tomcat/tmpFiles \
+ && chown -R user:user /usr/local/tomcat   
 
 # Copy WAR file from Stage 1 to Tomcat
 COPY --from=build /app/target/*.war /usr/local/tomcat/webapps/ROOT.war
-
-# Change ownership of Tomcat files to new user
-RUN chown -R user:user /usr/local/tomcat
 
 # Run application using new user
 USER user
