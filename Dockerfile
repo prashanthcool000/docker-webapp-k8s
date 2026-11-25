@@ -28,11 +28,12 @@ FROM tomcat:9.0-jre11-temurin-jammy AS runtime
 RUN rm -rf /usr/local/tomcat/webapps/*
 
 # Create user
-RUN rm -rf /usr/local/tomcat/webapps/* \
- && groupadd --system --gid 10001 user \
- && useradd  --system --uid 10001 --gid user --home-dir /usr/local/tomcat --shell /usr/sbin/nologin app \
+RUN groupadd --system --gid 10001 user \
+ && useradd --system --uid 10001 --gid user \
+    --home-dir /usr/local/tomcat \
+    --shell /usr/sbin/nologin user \
  && mkdir -p /usr/local/tomcat/tmpFiles \
- && chown -R user:user /usr/local/tomcat   
+ && chown -R user:user /usr/local/tomcat
 
 # Copy WAR file from Stage 1 to Tomcat
 COPY --from=build /app/target/*.war /usr/local/tomcat/webapps/ROOT.war
